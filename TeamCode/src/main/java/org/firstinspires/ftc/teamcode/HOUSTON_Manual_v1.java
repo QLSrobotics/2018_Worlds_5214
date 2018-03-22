@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Manual_WoodDump_SUPERS", group="Team5214")
+@TeleOp(name="HOUSTON_Manual_v1", group="Team5214")
 //@Disabled
-public class SUPERS_Manual_WoodDump extends LinearOpMode {
+public class HOUSTON_Manual_v1 extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     //declares motors
@@ -104,16 +104,16 @@ public class SUPERS_Manual_WoodDump extends LinearOpMode {
             rBumpGp1();
 
 //            if(gamepad1.right_bumper){lDum.setPosition(0.73); rDum.setPosition(.21); sleep(500); cDum.setPosition(0.25); lBelt.setPower(1); rBelt.setPower(-1);}
-            if(gamepad1.y){
-                lDum.setPosition(0.57);
+            if(gamepad1.x){
+                lDum.setPosition(0.61);
                 cDum.setPosition(0.33);}
 
-            if(gamepad1.left_bumper){
-                lDum.setPosition(0.11);
+            if(gamepad1.y){
+                lDum.setPosition(0.15);
                 cDum.setPosition(0.8); }
 
-            if(gamepad1.a){
-                lDum.setPosition(0.48);
+            if(gamepad1.b){
+                lDum.setPosition(0.53);
                 cDum.setPosition(0.33);
                 lBelt.setPower(0); rBelt.setPower(0);}
 
@@ -231,25 +231,25 @@ public class SUPERS_Manual_WoodDump extends LinearOpMode {
             telemetry.update();
             leftBack.setPower(
                     ((gamepad1.left_stick_y + gamepad1.left_stick_x + (.5*gamepad1.right_stick_y)) + (.75 * -(gamepad1.right_stick_x))
-                            + (.5 * (gamepad1.right_trigger)) + -.5 * (gamepad1.left_trigger))
+                            + (.6 * (gamepad1.right_trigger)) + -.6 * (gamepad1.left_trigger))
                             + .5*((gamepad2.left_stick_y + gamepad2.left_stick_x + (.5*gamepad2.right_stick_y)) + (.75 * -(gamepad2.right_stick_x))
                             + (.75 * (gamepad2.right_trigger)) + -.75 * (gamepad2.left_trigger)));
 
             leftFront.setPower(
                     ((gamepad1.left_stick_y - gamepad1.left_stick_x+ (.5*gamepad1.right_stick_y) + (.75 * -(gamepad1.right_stick_x))
-                            + (-.5 * (gamepad1.right_trigger)) + .5 * (gamepad1.left_trigger)))
+                            + (-.6 * (gamepad1.right_trigger)) + .6 * (gamepad1.left_trigger)))
                             +.5*((gamepad2.left_stick_y - gamepad2.left_stick_x+ (.5*gamepad2.right_stick_y) + (.75 * -(gamepad2.right_stick_x))
                             + (-.75 * (gamepad2.right_trigger)) + .75 * (gamepad2.left_trigger))));
 
             rightBack.setPower(
                     ((-gamepad1.left_stick_y + gamepad1.left_stick_x+ (-.5*gamepad1.right_stick_y) + (.75 * -(gamepad1.right_stick_x))
-                            + (.5 * (gamepad1.right_trigger)) + -.5 * (gamepad1.left_trigger)))
+                            + (.6 * (gamepad1.right_trigger)) + -.6 * (gamepad1.left_trigger)))
                             +.5*((-gamepad2.left_stick_y + gamepad2.left_stick_x+ (-.5*gamepad2.right_stick_y) + (.75 * -(gamepad2.right_stick_x))
                             + (.75 * (gamepad2.right_trigger)) + -.75 * (gamepad2.left_trigger))));
 
             rightFront.setPower(
                     ((-gamepad1.left_stick_y - gamepad1.left_stick_x+ (-.5*gamepad1.right_stick_y) + (.75 * -(gamepad1.right_stick_x))
-                            + (-.5 * (gamepad1.right_trigger)) + .5 * (gamepad1.left_trigger)))
+                            + (-.6 * (gamepad1.right_trigger)) + .6 * (gamepad1.left_trigger)))
                             +.5*((-gamepad2.left_stick_y - gamepad2.left_stick_x+ (-.5*gamepad2.right_stick_y) + (.75 * -(gamepad2.right_stick_x))
                             + (-.75 * (gamepad2.right_trigger)) + .75 * (gamepad2.left_trigger))));
         }
@@ -329,7 +329,7 @@ public class SUPERS_Manual_WoodDump extends LinearOpMode {
     }
 
     private void bButton(){
-        if (gamepad1.b){
+        if (gamepad1.right_bumper){
             startTime = System.currentTimeMillis();
             liftMotor.setPower(.5);
         }
@@ -338,7 +338,7 @@ public class SUPERS_Manual_WoodDump extends LinearOpMode {
     }
 
     private void xButton(){
-        if (gamepad1.x){
+        if (gamepad1.left_bumper){
             startTime = System.currentTimeMillis();
             liftMotor.setPower(-.5);
         }
@@ -372,15 +372,15 @@ public class SUPERS_Manual_WoodDump extends LinearOpMode {
 //    }
 
     public void rBumpGp1(){
-        if(gamepad1.right_bumper){
+        if(gamepad1.a){
             startTime2 = System.currentTimeMillis();
         }
-        setPos(1,50,.35,startTime2,lDum);
-        setPos(51,150,.45,startTime2,lDum);
-        setPos(151,250,.50,startTime2,lDum);
-        setPos(251,350,.55,startTime2,lDum);
-        setPos(351,450,.6,startTime2,lDum);
-        setPos(451,600,.66,startTime2,lDum);
+        setPos(1,50,.40,startTime2,lDum);
+        setPos(51,150,.50,startTime2,lDum);
+        setPos(151,250,.55,startTime2,lDum);
+        setPos(251,350,.6,startTime2,lDum);
+        setPos(351,450,.65,startTime2,lDum);
+        setPos(451,600,.71,startTime2,lDum);
         setPos(401,600,.33,startTime2,cDum);
         setSpe(401, 600, 1,startTime2,lBelt);
         setSpe(401, 600, -1,startTime2,rBelt);
