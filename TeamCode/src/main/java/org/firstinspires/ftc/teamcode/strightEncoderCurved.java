@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -13,6 +14,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="Stright Encoder Curved", group="test")
+@Disabled
+
 public class strightEncoderCurved extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -68,7 +71,6 @@ public class strightEncoderCurved extends LinearOpMode {
     this runs at 75% distace for the full stergth
     then it runs the last 25% at 25% power
      */
-    //i heard it worked at 0.8 but hima says it works at 1
     private void straightWithEncoderCurve(double strength, double straightInches){
 
         leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);

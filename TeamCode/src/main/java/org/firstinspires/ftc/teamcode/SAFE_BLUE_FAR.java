@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -29,32 +30,40 @@ import java.util.Locale;
  * Created by hima on 2/17/18.
  */
 
-@Autonomous(name = "SAFE_Blue_Far", group = "safe")
+@Autonomous(name = "Sates_Blue_Far", group = "safe")
+@Disabled
+
 public class SAFE_BLUE_FAR extends LinearOpMode {    // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    //private DcMotor testMotor;
-    private int target;
-    //declare drive motors
     private DcMotor leftBack;
     private DcMotor rightBack;
     private DcMotor leftFront;
     private DcMotor rightFront;
-    private int ticks;
-    private int position2move2;
-    private double angel;
-    // The IMU sensor object
-    BNO055IMU imu;
+
+    private DcMotor liftMotor;
+    private DcMotor relicMotor;
+
     private DcMotor lBelt;
     private DcMotor rBelt;
-    private Servo leftDump;
-    private Servo rightDump;
-    private Servo centerDump;
-    // declare color servo
+
     private Servo colorServo;
-    private Servo flickServo;
+    private Servo FLICKSERVO;
+
+
     private String colorid;
     // declare color sensor
     private ColorSensor colorFront;
+
+    private Servo rightDump;
+    private Servo leftDump;
+    private Servo centerDump;
+    private Servo wrist;
+    private Servo finger;
+
+    private int ticks;
+    private int position2move2;
+    // The IMU sensor object
+    BNO055IMU imu;
     VuforiaLocalizer vuforia;
 
 
@@ -96,26 +105,28 @@ public class SAFE_BLUE_FAR extends LinearOpMode {    // Declare OpMode members.
         relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
 
-        //mapping drive motors to configuration
-        leftBack  = hardwareMap.get(DcMotor.class, "LB");
+        //hooks up all of these motors with the config file
+        leftBack = hardwareMap.get(DcMotor.class, "LB");
         rightBack = hardwareMap.get(DcMotor.class, "RB");
-        leftFront  = hardwareMap.get(DcMotor.class, "LF");
+        leftFront = hardwareMap.get(DcMotor.class, "LF");
         rightFront = hardwareMap.get(DcMotor.class, "RF");
 
-        //mapping dump servos to configuration
-        leftDump  = hardwareMap.get(Servo.class, "LD");
-        rightDump = hardwareMap.get(Servo.class, "RD");
-        centerDump = hardwareMap.get(Servo.class, "CD");
+        centerDump = hardwareMap.servo.get("CD");
+        rightDump = hardwareMap.servo.get("RD");
+        leftDump = hardwareMap.servo.get("LD");
+        colorServo = hardwareMap.servo.get("COLORSERVO");
+        FLICKSERVO = hardwareMap.servo.get("FLICKSERVO");
+        colorFront = hardwareMap.get(ColorSensor.class,"CSF");
+
+        wrist = hardwareMap.servo.get("WRIST");
+        finger = hardwareMap.servo.get("FINGER");
 
         lBelt = hardwareMap.dcMotor.get("LBELT");
         rBelt = hardwareMap.dcMotor.get("RBELT");
 
-        //mapping color servo to configuration
-        colorServo = hardwareMap.get(Servo.class, "COLORSERVO");
-        flickServo = hardwareMap.get(Servo.class, "FLICKSERVO");
+        liftMotor = hardwareMap.dcMotor.get("LIFT");
+        relicMotor = hardwareMap.dcMotor.get("RELICMOTOR");
 
-        //mapping color sensor to configuration
-        colorFront = hardwareMap.get(ColorSensor.class, "CSF");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -153,8 +164,9 @@ public class SAFE_BLUE_FAR extends LinearOpMode {    // Declare OpMode members.
         rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        flickServo.setPosition(.49);
-        centerDump.setPosition(.7);
+        FLICKSERVO.setPosition(.5);
+        centerDump.setPosition(.33);
+        colorServo.setPosition(.71);
 
         composeTelemetry();
 
@@ -171,31 +183,31 @@ public class SAFE_BLUE_FAR extends LinearOpMode {    // Declare OpMode members.
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            sleep(100);
-            arm(.75); // put arm down
-            sleep(1000);
+            centerDump.setPosition(.33);
 
+            arm(.16); // put arm down
+            sleep(1000);
             colorid = checkColor(colorFront, currentRatio);
 
             telemetry.addLine(colorid);
             telemetry.update();
 
-            sleep(100);
+            if (colorid == "RED"){FLICKSERVO(0);
+            }else if(checkColor(colorFront,.4) == "BLUE"){FLICKSERVO(1);}
 
-            if (colorid == "RED"){flicker(1);}
-            else if(colorid== "BLUE"){flicker(0);}
-
+            sleep(700);
+            FLICKSERVO.setPosition(.5);
+            arm(.71); // put arm up
             sleep(500);
-            flickServo.setPosition(.49);
-            arm(.1); // put arm up
-            sleep(200);
 
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             sleep(100);
             telemetry.addLine(vuMark.toString());
             telemetry.update();
 
-           // String keyResult = vuMark.toString();
+
+
+           //String keyResult = vuMark.toString();
 
             String keyResult = "LEFT";
 
@@ -825,14 +837,14 @@ public class SAFE_BLUE_FAR extends LinearOpMode {    // Declare OpMode members.
 
     private void dump(double left, double right) {
         //setting the two dump servo to an input value
-        leftDump.setPosition(left);
-        rightDump.setPosition(right);
+  //      leftDump.setPosition(left);
+  //      rightDump.setPosition(right);
     }
-    private void flicker(double position) {
-        //setting the flicker servo to an input value
-        flickServo.setPosition(position);
+    private void FLICKSERVO(double position) {
+        //setting the FLICKSERVO servo to an input value
+        FLICKSERVO.setPosition(position);
         sleep(2000);
-        flickServo.setPosition(0.5);
+        FLICKSERVO.setPosition(0.5);
 
     }
     private void arm(double position) {
