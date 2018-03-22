@@ -1,4 +1,0 @@
-#Sun Mar 11 04:13:56 PDT 2018
-base.0=/Users/hima/Documents/robotics/code/5214supers2018/TeamCode/build/intermediates/transforms/dexMerger/debug/0
-path.0=classes.dex
-renamed.0=classes.dex
